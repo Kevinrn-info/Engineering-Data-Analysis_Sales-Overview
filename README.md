@@ -5,7 +5,7 @@
   <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" width="100%">
 
   [![Portfolio](https://img.shields.io/badge/Portfolio-Kevinrn.com-blue?style=for-the-badge&logo=google-chrome)](https://kevinrn.com)
-  [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/yourprofile)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/krobles-info)
 
   *A complete Data Engineering, Analytics, and Business Intelligence project showcasing a professional Agile workflow, automation, and AI integration.*
 
@@ -89,8 +89,8 @@ Here are the main tools and technologies used in this project:
 I am always looking for new challenges and opportunities in the Data world. If you are a recruiter or a fellow data enthusiast, feel free to reach out!
 
 - 🌐 **Portfolio:** [Kevinrn.com](https://kevinrn.com)
-- ✉️ **Email:** your.email@example.com
-- 💼 **LinkedIn:** [Your LinkedIn Profile](https://linkedin.com)
+- ✉️ **Email:** krobles.info@gmail.com.com
+- 💼 **LinkedIn:** [Your LinkedIn Profile](https://www.linkedin.com/in/krobles-info)
 
 <br>
 
