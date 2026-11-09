@@ -1,0 +1,6 @@
+# Ignore any folders that containing extensive documentation and large files.
+documentacion/
+docs/
+
+*.crdownload
+*.pbix
