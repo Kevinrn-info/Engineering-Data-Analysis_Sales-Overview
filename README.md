@@ -9,7 +9,11 @@
 
   *A complete Data Engineering, Analytics, and Business Intelligence project showcasing a professional Agile workflow, automation, and AI integration.*
 
-  <img src="https://media.giphy.com/media/L8K62iY2Fq2Fj28i54/giphy.gif" alt="Data Animation" width="600"/>
+<!-- Banner de SummitBase Outfitters -->
+  <img src="\img\SummitBase Outfitters.jpg"
+  alt="SummitBase Outfitters Banner" width="100%">
+
+  <br>
 
 </div>
 
