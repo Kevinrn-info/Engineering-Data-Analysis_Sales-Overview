@@ -1,0 +1,102 @@
+table shipments
+	lineageTag: 38d503c1-fea5-46cc-ba94-3b3e2093bb38
+
+	column shipment_id
+		dataType: string
+		lineageTag: 929eaaf0-6c66-4ffe-bb25-ab5df2d9bd46
+		summarizeBy: none
+		sourceColumn: shipment_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: 63318e71-4276-4fe3-b1f9-ab5aa4e5bb7c
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column carrier
+		dataType: string
+		lineageTag: 6682ae69-0c7d-42c8-b48c-01f928cbaa38
+		summarizeBy: none
+		sourceColumn: carrier
+
+		annotation SummarizationSetBy = Automatic
+
+	column tracking_number
+		dataType: string
+		lineageTag: fa299f82-3718-458b-b830-132efafe0feb
+		summarizeBy: none
+		sourceColumn: tracking_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipped_at
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 92508359-3073-475f-be45-7a3d79634240
+		summarizeBy: none
+		sourceColumn: shipped_at
+
+		variation Variation
+			isDefault
+			relationship: 71568774-b0b9-4245-9bb7-0fb14e0a1a2b
+			defaultHierarchy: LocalDateTable_c8a1e089-754b-4208-855c-0c367cb7fcd2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column delivered_at
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: e0395d1b-4450-4af4-a0eb-9ee0e6c82d3e
+		summarizeBy: none
+		sourceColumn: delivered_at
+
+		variation Variation
+			isDefault
+			relationship: 37efbe2d-a55f-4bcc-95bb-eaa58ad526c9
+			defaultHierarchy: LocalDateTable_4ec64be0-5d5b-428a-bc21-b892142d4b91.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column status
+		dataType: string
+		lineageTag: ef15ea58-19e9-4bd4-b770-98974b093cee
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition shipments = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\shipments.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"shipment_id", Int64.Type}, {"order_id", Int64.Type}, {"carrier", type text}, {"tracking_number", type text}, {"shipped_at", type datetime}, {"delivered_at", type datetime}, {"status", type text}}),
+				    #"Inserted Date" = Table.AddColumn(#"Change Type", "Date", each DateTime.Date([shipped_at]), type date),
+				    #"Removed Columns" = Table.RemoveColumns(#"Inserted Date",{"shipped_at"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Date", "shipped_at"}}),
+				    #"Inserted Date1" = Table.AddColumn(#"Renamed Columns", "Date", each DateTime.Date([delivered_at]), type date),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Inserted Date1",{"delivered_at"}),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Removed Columns1",{{"Date", "delivered_at"}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns1",{"shipment_id", "order_id", "carrier", "tracking_number", "shipped_at", "delivered_at", "status"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"order_id", type text}, {"shipment_id", type text}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each true)
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

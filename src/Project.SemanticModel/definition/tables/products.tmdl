@@ -1,0 +1,117 @@
+table products
+	lineageTag: 963a5245-c6b3-41c1-b0a4-bc9bef799d67
+
+	column product_id
+		dataType: string
+		lineageTag: 96e47f71-7de8-4a32-a80e-51fc2ea6705e
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku
+		dataType: string
+		lineageTag: d2292ca4-1298-47ec-8013-62439f658b73
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: b7294f62-9e99-4a4a-94b9-35dcc22e1451
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: e14dc53b-2c63-460d-983e-7e1eea12504e
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand
+		dataType: string
+		lineageTag: 5f305d24-34cc-43b1-a337-4402c4982ee9
+		summarizeBy: none
+		sourceColumn: brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_price
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 97b24c98-f69f-4d46-8a5a-2df200d32b7c
+		summarizeBy: sum
+		sourceColumn: unit_price
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_cost
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 53832790-a684-44a5-9566-65d7a679a8e4
+		summarizeBy: sum
+		sourceColumn: unit_cost
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: double
+		lineageTag: 7fa9fe38-8a28-494c-af1f-ae73f2a76424
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_active
+		dataType: string
+		lineageTag: 067223b4-ad08-414a-8c2f-255c8640dd26
+		summarizeBy: none
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_at
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: cf771e59-cba0-44f0-9c4a-b09cf45e45eb
+		summarizeBy: none
+		sourceColumn: created_at
+
+		variation Variation
+			isDefault
+			relationship: 89a79e32-0cd3-4af4-8851-f5bb1b4b53aa
+			defaultHierarchy: LocalDateTable_bfe8ecdd-3678-43c9-92a2-33f4305461de.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	partition products = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\products.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"product_id", Int64.Type}, {"sku", type text}, {"product_name", type text}, {"category", type text}, {"brand", type text}, {"unit_price", type number}, {"unit_cost", type number}, {"weight_kg", type number}, {"is_active", Int64.Type}, {"created_at", type date}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Change Type", each true),
+				    #"Replaced Value" = Table.ReplaceValue(#"Filtered Rows",null,-1,Replacer.ReplaceValue,{"weight_kg"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value",{{"is_active", type text}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Changed Type","1","Active",Replacer.ReplaceText,{"is_active"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","0","Inactive",Replacer.ReplaceText,{"is_active"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value2",{{"product_id", type text}, {"unit_price", Currency.Type}, {"unit_cost", Currency.Type}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

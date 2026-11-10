@@ -1,0 +1,112 @@
+table customers
+	lineageTag: 3c90098b-d22d-4979-8630-8811700c36d4
+
+	column customer_id
+		dataType: string
+		lineageTag: 554c16fc-219f-4f1b-9525-6042d3541f91
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_name
+		dataType: string
+		lineageTag: 3ce77ee6-29a1-43f2-bec0-6aa5094bf941
+		summarizeBy: none
+		sourceColumn: first_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_name
+		dataType: string
+		lineageTag: 69cbab9e-0da2-40c0-96fe-327038237b40
+		summarizeBy: none
+		sourceColumn: last_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column email
+		dataType: string
+		lineageTag: c2559321-aeb1-4033-bf7c-c31c84f4ebc8
+		summarizeBy: none
+		sourceColumn: email
+
+		annotation SummarizationSetBy = Automatic
+
+	column phone
+		dataType: string
+		lineageTag: cf20f6ec-0c06-472f-82ee-5bdf20c3bdab
+		summarizeBy: none
+		sourceColumn: phone
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: 76682820-9383-4dc6-a05f-cf302a1c577b
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: a12f4b78-3343-415d-8625-779709525129
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column signup_date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 2c9808de-44ce-46d5-bff1-61d5bf3b333c
+		summarizeBy: none
+		sourceColumn: signup_date
+
+		variation Variation
+			isDefault
+			relationship: a8813653-4978-489f-a41c-ee953f6ec7a1
+			defaultHierarchy: LocalDateTable_61941a99-b163-4b74-840b-58793d085a99.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column loyalty_tier
+		dataType: string
+		lineageTag: c25f5874-4584-4406-9119-22cc8659595a
+		summarizeBy: none
+		sourceColumn: loyalty_tier
+
+		annotation SummarizationSetBy = Automatic
+
+	column marketing_opt_in
+		dataType: string
+		lineageTag: 43051a56-791a-431c-a80c-5d0da64ae911
+		summarizeBy: none
+		sourceColumn: marketing_opt_in
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\customers.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"customer_id", Int64.Type}, {"first_name", type text}, {"last_name", type text}, {"email", type text}, {"phone", type text}, {"country", type text}, {"city", type text}, {"signup_date", type date}, {"loyalty_tier", type text}, {"marketing_opt_in", Int64.Type}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Change Type"," ","None",Replacer.ReplaceText,{"phone"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","","Unregistered",Replacer.ReplaceValue,{"phone"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value1",{{"customer_id", type text}, {"signup_date", type date}, {"marketing_opt_in", type text}}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Changed Type","1","Opted In",Replacer.ReplaceText,{"marketing_opt_in"}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Replaced Value2","0","Opted Out",Replacer.ReplaceText,{"marketing_opt_in"})
+				in
+				    #"Replaced Value3"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

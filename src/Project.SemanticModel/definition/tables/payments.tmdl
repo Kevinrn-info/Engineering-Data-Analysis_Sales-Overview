@@ -1,0 +1,93 @@
+table payments
+	lineageTag: 4a72fb5d-b164-44f5-9906-67aaa6b162ab
+
+	column payment_id
+		dataType: string
+		lineageTag: 29ac4705-2667-4b53-b3a9-15c69b057c24
+		summarizeBy: none
+		sourceColumn: payment_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: 24a5de53-0313-42d4-86bb-9322ed9a0e8f
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column method
+		dataType: string
+		lineageTag: b661db3f-32fb-4a4e-9662-6125d955a1fb
+		summarizeBy: none
+		sourceColumn: method
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 27ccb78f-1f9a-42e0-a219-af966b5d8792
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column paid_date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 6c4fb279-c3eb-4c7f-ba73-9a92cfeca7f3
+		summarizeBy: none
+		sourceColumn: paid_date
+
+		variation Variation
+			isDefault
+			relationship: 92d8f115-ce20-45a5-b7e0-5e1baaf76579
+			defaultHierarchy: LocalDateTable_5685b821-be53-45ea-b778-4e134f31cec8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column paid_time
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 9b136cf8-7562-43fc-b410-befb83f7a965
+		summarizeBy: none
+		sourceColumn: paid_time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column status
+		dataType: string
+		lineageTag: 124c1005-3954-41b3-866f-351954ea2e16
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition payments = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\payments.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"payment_id", type text}, {"order_id", type text}, {"method", type text}, {"amount", type text}, {"paid_at", type datetime}, {"status", type text}}),
+				    #"Inserted Date" = Table.AddColumn(#"Change Type", "Date", each DateTime.Date([paid_at]), type date),
+				    #"Inserted Time" = Table.AddColumn(#"Inserted Date", "Time", each DateTime.Time([paid_at]), type time),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Time",{{"Date", "paid_date"}, {"Time", "paid_time"}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Renamed Columns",{"paid_at"}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Removed Columns",{"payment_id", "order_id", "method", "amount", "paid_date", "paid_time", "status"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Reordered Columns",{{"amount", Currency.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

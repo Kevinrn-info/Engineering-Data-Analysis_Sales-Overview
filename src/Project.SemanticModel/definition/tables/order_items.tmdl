@@ -1,0 +1,68 @@
+table order_items
+	lineageTag: fd0b9e9a-5d85-475f-b622-a48971e8ad32
+
+	column order_item_id
+		dataType: string
+		lineageTag: a767448b-659f-4d30-8df1-8cb5c7496ca3
+		summarizeBy: none
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: d4e698c6-8ff6-4a9e-8581-078eeb7acf4f
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: 99aab31a-9c49-4a92-bdb7-4fcf41a19696
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 43b81592-66fe-4827-bfc8-fdb8066df5d8
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_price
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 69b73fff-b486-4e46-b41f-e06d365b8cb4
+		summarizeBy: sum
+		sourceColumn: unit_price
+
+		annotation SummarizationSetBy = Automatic
+
+	column line_total
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: ddb077fc-a224-4261-8d8b-ef55534f3dc8
+		summarizeBy: sum
+		sourceColumn: line_total
+
+		annotation SummarizationSetBy = Automatic
+
+	partition order_items = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\order_items.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"order_item_id", type text}, {"order_id", type text}, {"product_id", type text}, {"quantity", Int64.Type}, {"unit_price", Currency.Type}, {"line_total", Currency.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

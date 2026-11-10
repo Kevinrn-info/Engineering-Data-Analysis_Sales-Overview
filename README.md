@@ -7,12 +7,11 @@
   [![Portfolio](https://img.shields.io/badge/Portfolio-Kevinrn.com-blue?style=for-the-badge&logo=google-chrome)](https://kevinrn.com)
   [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/krobles-info)
 
-  *A complete Data Engineering, Analytics, and Business Intelligence project showcasing a professional Agile workflow, automation, and AI integration.*
-
 <!-- Banner de SummitBase Outfitters -->
   <img src="\img\SummitBase Outfitters.jpg"
   alt="SummitBase Outfitters Banner" width="100%">
-
+ 
+  *A complete Data Engineering, Analytics, and Business Intelligence project showcasing a professional Agile workflow, automation, and AI integration.*
   <br>
 
 </div>
@@ -22,6 +21,11 @@
 ## 📖 About The Project
 
 Welcome to my final portfolio project! This repository demonstrates my ability to manage the **entire lifecycle of data**. From the initial architecture and database configuration to the final Business Intelligence dashboard and AI integration, this project is built exactly like a real-world corporate assignment. 
+
+### 🏔️ Business Case: SummitBase Outfitters
+For this practical project, I have conceptualized the data within the ecosystem of **SummitBase Outfitters**—a fictional e-commerce and inventory management platform designed for enthusiasts of mountaineering, camping, and outdoor exploration. The dataset (`products.csv`) covers 1,500 pieces of equipment, analyzing inventory metrics, cost margins (`unit_cost` vs. `unit_price`), and weight-based shipping logistics, effectively bridging a passion for the outdoors with analytical innovation.
+
+I designed this project using **Scrum-Agile** methodologies, ensuring high-quality documentation, security, and scalable data solutions. You can find more of my work on my personal website: [Kevinrn.com](https://kevinrn.com).
 
 I designed this project using **Scrum-Agile** methodologies, ensuring high-quality documentation, security, and scalable data solutions. You can find more of my work on my personal website: [Kevinrn.com](https://kevinrn.com).
 

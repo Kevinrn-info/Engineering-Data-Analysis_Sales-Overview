@@ -1,0 +1,80 @@
+table returns
+	lineageTag: 6a3eb2bf-349c-4ac0-9ad7-9a83c7946e64
+
+	column return_id
+		dataType: string
+		lineageTag: 4032a144-0ce3-43f5-ace3-a33836f2ad21
+		summarizeBy: none
+		sourceColumn: return_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: string
+		lineageTag: f237193f-b7bf-4894-ab60-1e14c7148077
+		summarizeBy: none
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column reason
+		dataType: string
+		lineageTag: 6b559a0b-90b0-44c4-800d-44227179c458
+		summarizeBy: none
+		sourceColumn: reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column refund_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 396d4d0f-f8e6-4a95-8a55-a637c04b7ee6
+		summarizeBy: sum
+		sourceColumn: refund_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column requested_at
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: ad694902-6de4-46b8-9259-c2c4a4d615be
+		summarizeBy: none
+		sourceColumn: requested_at
+
+		variation Variation
+			isDefault
+			relationship: ff4912eb-25bf-4351-ab94-e104d4e02a1b
+			defaultHierarchy: LocalDateTable_0d8ac162-ccee-4e8c-a1f7-4cbea3a9ef37.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column status
+		dataType: string
+		lineageTag: b8c40a17-c344-4bdb-8ff4-47dbbbc833e0
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition returns = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\returns.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"refund_amount", Currency.Type}, {"requested_at", type datetime}}),
+				    #"Inserted Date" = Table.AddColumn(#"Changed Type", "Date", each DateTime.Date([requested_at]), type date),
+				    #"Removed Columns" = Table.RemoveColumns(#"Inserted Date",{"requested_at"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Date", "requested_at"}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"return_id", "order_item_id", "reason", "refund_amount", "requested_at", "status"})
+				in
+				    #"Reordered Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

@@ -1,0 +1,58 @@
+relationship a8813653-4978-489f-a41c-ee953f6ec7a1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customers.signup_date
+	toColumn: LocalDateTable_61941a99-b163-4b74-840b-58793d085a99.Date
+
+relationship 92d8f115-ce20-45a5-b7e0-5e1baaf76579
+	joinOnDateBehavior: datePartOnly
+	fromColumn: payments.paid_date
+	toColumn: LocalDateTable_5685b821-be53-45ea-b778-4e134f31cec8.Date
+
+relationship AutoDetected_a5f18b04-cb8e-42e4-8c60-e999a039c558
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: payments.order_id
+	toColumn: orders.order_id
+
+relationship 7c321ba1-ac3f-4537-a66e-5a65dc13ab07
+	joinOnDateBehavior: datePartOnly
+	fromColumn: orders.order_date
+	toColumn: LocalDateTable_7934eb69-36a6-4847-b65b-a793572d0246.Date
+
+relationship 89a79e32-0cd3-4af4-8851-f5bb1b4b53aa
+	joinOnDateBehavior: datePartOnly
+	fromColumn: products.created_at
+	toColumn: LocalDateTable_bfe8ecdd-3678-43c9-92a2-33f4305461de.Date
+
+relationship ff4912eb-25bf-4351-ab94-e104d4e02a1b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: returns.requested_at
+	toColumn: LocalDateTable_0d8ac162-ccee-4e8c-a1f7-4cbea3a9ef37.Date
+
+relationship AutoDetected_31a5a035-a811-466c-b15b-57a31af62805
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: returns.order_item_id
+	toColumn: order_items.order_item_id
+
+relationship 71568774-b0b9-4245-9bb7-0fb14e0a1a2b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: shipments.shipped_at
+	toColumn: LocalDateTable_c8a1e089-754b-4208-855c-0c367cb7fcd2.Date
+
+relationship 37efbe2d-a55f-4bcc-95bb-eaa58ad526c9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: shipments.delivered_at
+	toColumn: LocalDateTable_4ec64be0-5d5b-428a-bc21-b892142d4b91.Date
+
+relationship AutoDetected_1c7958cd-fec8-4847-96ce-a74bd95b4cad
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: shipments.order_id
+	toColumn: orders.order_id
+
+relationship 162e7cf5-30ac-00c6-2493-bb2b7daceca4
+	crossFilteringBehavior: bothDirections
+	fromColumn: orders.customer_id
+	toColumn: customers.customer_id
+

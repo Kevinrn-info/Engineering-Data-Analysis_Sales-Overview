@@ -1,0 +1,137 @@
+table orders
+	lineageTag: 5113d51d-434b-4ead-8270-3dbfcdf27cac
+
+	column order_id
+		dataType: string
+		lineageTag: a01c6472-27c0-403f-9c00-d07ab0248134
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: c1856b19-5d30-4a9c-a582-ce1dc5adfe70
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 2f0a4fce-8f30-4225-bb0d-5587d479181f
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: 9f50fe50-2412-4921-b8c0-323f8e858b67
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column subtotal
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 7860af4b-1d4a-4843-a63b-197a58431f3e
+		summarizeBy: sum
+		sourceColumn: subtotal
+
+		annotation SummarizationSetBy = Automatic
+
+	column discount_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: a42e6bb9-d6df-4a09-a56f-4d40cd470fc0
+		summarizeBy: sum
+		sourceColumn: discount_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_fee
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: f2710f27-b8b0-4d6c-8fe6-c21380f98782
+		summarizeBy: sum
+		sourceColumn: shipping_fee
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 4f72cc19-b870-46f6-9962-987c670b9ef1
+		summarizeBy: sum
+		sourceColumn: tax_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_amount
+		dataType: decimal
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 8662e0c5-0d33-4323-9a4a-8660671b367d
+		summarizeBy: sum
+		sourceColumn: total_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column currency
+		dataType: string
+		lineageTag: ee7de8cf-9218-4de3-9307-8ba749886423
+		summarizeBy: none
+		sourceColumn: currency
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 04778c2c-cdb7-44dd-8b7c-648d83d6496d
+		summarizeBy: none
+		sourceColumn: order_date
+
+		variation Variation
+			isDefault
+			relationship: 7c321ba1-ac3f-4537-a66e-5a65dc13ab07
+			defaultHierarchy: LocalDateTable_7934eb69-36a6-4847-b65b-a793572d0246.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column order_time
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 9fa757c0-fbc0-4518-bece-f0906f652c44
+		summarizeBy: none
+		sourceColumn: order_time
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	partition orders = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\krobl\OneDrive\Desktop\Engineering-Data-Analysis_Sales-Overview\data\orders.csv"),[Delimiter=",", Columns=11, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"subtotal", Currency.Type}, {"discount_amount", Currency.Type}, {"shipping_fee", Currency.Type}, {"tax_amount", Currency.Type}, {"total_amount", Currency.Type}, {"order_date", type datetime}}),
+				    #"Inserted Date" = Table.AddColumn(#"Changed Type", "Date", each DateTime.Date([order_date]), type date),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Inserted Date",{"order_id", "customer_id", "order_date", "Date", "status", "channel", "subtotal", "discount_amount", "shipping_fee", "tax_amount", "total_amount", "currency"}),
+				    #"Inserted Time" = Table.AddColumn(#"Reordered Columns", "Time", each DateTime.Time([order_date]), type time),
+				    #"Reordered Columns1" = Table.ReorderColumns(#"Inserted Time",{"order_id", "customer_id", "order_date", "Date", "Time", "status", "channel", "subtotal", "discount_amount", "shipping_fee", "tax_amount", "total_amount", "currency"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Reordered Columns1",{"order_date"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Date", "order_date"}, {"Time", "order_time"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+
