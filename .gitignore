@@ -1,8 +1,32 @@
-# Ignore any folders that containing extensive documentation and large files.
-documentacion/
-docs/
+# --- Secrets & local config -------------------------------------------------
+.env
+*.env
+!.env.example
 
+# --- Python ----------------------------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+*.egg-info/
 
-# Files
-*.crdownload
+# --- Data --------------------------------------------------------------------
+# Raw synthetic CSVs are versioned (data/raw). Generated outputs are not.
+data/processed/
+
+# --- Power BI ----------------------------------------------------------------
+# Binary report and local caches (Microsoft recommends ignoring these in PBIP)
 *.pbix
+**/.pbi/localSettings.json
+**/.pbi/cache.abf*
+
+# --- Large personal documentation -------------------------------------------
+Documentacion/
+
+# --- OS / editors ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.crdownload

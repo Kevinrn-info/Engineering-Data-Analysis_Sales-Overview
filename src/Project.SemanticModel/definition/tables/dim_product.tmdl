@@ -1,0 +1,136 @@
+table dim_product
+	lineageTag: bb04791a-dcbf-5329-8c97-b9764fe21e7e
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7ee57f6c-d2f5-5ff0-bd59-354e36c41556
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column sku
+		dataType: string
+		lineageTag: 33fb9787-1848-52d8-92ce-18c5389ff29a
+		summarizeBy: none
+		sourceColumn: sku
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: 84d22ca4-7410-55fa-868a-db359e7771e3
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 2742b507-0cf9-58e1-9899-7cf7a55c818e
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column brand
+		dataType: string
+		lineageTag: ddb9c0b6-abca-53c5-b6bf-1c619083e754
+		summarizeBy: none
+		sourceColumn: brand
+
+		annotation SummarizationSetBy = Automatic
+
+	column list_price
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: c0fd9bbc-9701-59bb-9e9c-4807d46ac9c1
+		summarizeBy: sum
+		sourceColumn: list_price
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_cost
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 61751309-51a8-55a6-b008-eea7ae22133a
+		summarizeBy: sum
+		sourceColumn: unit_cost
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_margin
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: a632e823-30bd-56a6-b3af-e86c1ff43d76
+		summarizeBy: sum
+		sourceColumn: unit_margin
+
+		annotation SummarizationSetBy = Automatic
+
+	column margin_pct
+		dataType: decimal
+		formatString: 0.0%
+		lineageTag: 9b62f1e6-2935-5925-afa2-da8933c847fd
+		summarizeBy: sum
+		sourceColumn: margin_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column price_band
+		dataType: string
+		lineageTag: fa7b91b0-d6cb-514e-965a-be7e2a273940
+		summarizeBy: none
+		sourceColumn: price_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: decimal
+		formatString: 0.00
+		lineageTag: 40c3e137-fa31-50c2-a004-7f1b311273f8
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_imputed
+		dataType: boolean
+		lineageTag: a27fb15d-703a-5d84-99f8-78e825e1716a
+		summarizeBy: none
+		sourceColumn: weight_imputed
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: boolean
+		lineageTag: 3357d6cd-2da4-527f-a187-3a490d6ca6cd
+		summarizeBy: none
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_at
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: fd56d4ad-ade7-5dd1-a742-765ec251e16e
+		summarizeBy: none
+		sourceColumn: created_at
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition dim_product = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(PgServer, PgDatabase),
+				    Data = Source{[Schema="analytics", Item="dim_product"]}[Data]
+				in
+				    Data
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
