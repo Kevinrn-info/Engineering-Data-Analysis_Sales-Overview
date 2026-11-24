@@ -56,6 +56,7 @@ flowchart LR
 | **Staging** | Cleaned tables with enforced `PRIMARY KEY`, `FOREIGN KEY` and `CHECK` constraints | `sql/01_staging_schema.sql` |
 | **Analytics** | Star schema: `dim_date`, `dim_customer`, `dim_product`, `fact_orders`, `fact_order_items`, `fact_returns` | `sql/02_analytics_views.sql` |
 | **BI** | Power BI project (PBIP/TMDL) with DAX measures, version-controlled as text | `src/Project.SemanticModel/` |
+| **Report** | 3 report pages + custom theme generated as code, sharing the slide decks' design | `tools/build_report.py` |
 
 ---
 
@@ -126,7 +127,8 @@ Definitions live in one place (`sql/02_analytics_views.sql`) and are reused by e
 │   ├── summitbase/           # Python ETL package (extract, transform, validate, load)
 │   ├── Project.pbip          # Power BI project (open this file)
 │   ├── Project.SemanticModel # TMDL model: tables, relationships, DAX measures
-│   └── Project.Report        # Report definition
+│   └── Project.Report        # Report pages + SummitBase theme (generated)
+├── tools/build_report.py     # Generates the Power BI report and theme
 ├── docs/                     # Project plan and technical documentation
 ├── docker-compose.yml        # PostgreSQL (+ optional pgAdmin)
 ├── requirements*.txt         # Pinned Python dependencies
@@ -142,7 +144,7 @@ Definitions live in one place (`sql/02_analytics_views.sql`) and are reused by e
 | ✅ | Infrastructure: Docker + PostgreSQL, reproducible environment, secrets kept out of Git |
 | ✅ | ETL pipeline with data-quality gates and a constrained staging layer |
 | ✅ | SQL star schema and Power BI semantic model with DAX measures |
-| 🔄 | Power BI report pages (Executive, Customers, Products, Logistics & Returns) |
+| ✅ | Power BI report pages (Summary, Customers & Returns, Operations) with a custom theme |
 | ⏳ | Exploratory analysis notebooks: RFM segmentation, cohorts, returns |
 | ⏳ | Unit tests (pytest) and CI with GitHub Actions |
 | ⏳ | n8n workflow for scheduled data refresh |
