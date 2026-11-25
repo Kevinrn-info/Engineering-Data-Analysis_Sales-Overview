@@ -1,0 +1,16 @@
+[project]
+name = "summitbase"
+version = "0.1.0"
+description = "SummitBase Outfitters - end-to-end sales analytics pipeline"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

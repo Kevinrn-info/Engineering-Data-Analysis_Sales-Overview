@@ -1,0 +1,7 @@
+# Development: tests, linting and exploratory analysis
+-r requirements.txt
+pytest==9.2.0
+ruff==0.17.6
+jupyterlab==4.6.6
+matplotlib==3.11.2
+seaborn==0.13.2

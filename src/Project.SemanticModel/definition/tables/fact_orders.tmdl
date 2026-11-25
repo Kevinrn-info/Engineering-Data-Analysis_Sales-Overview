@@ -1,0 +1,355 @@
+table fact_orders
+	lineageTag: 910d1ecd-7582-5281-a3d1-e3ae6afbc88e
+
+	measure Orders = COUNTROWS ( fact_orders )
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 97404d36-d433-5fd1-aefc-eacfe2ba9dbc
+
+	measure 'Completed Orders' = CALCULATE ( [Orders], fact_orders[is_completed_sale] = TRUE () )
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: e6cda085-f5ee-5d60-9435-84fa28dd3bf5
+
+	measure 'Cancelled Orders' = CALCULATE ( [Orders], fact_orders[is_cancelled] = TRUE () )
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: ca7c5b83-821d-5755-bbd9-5d0d3c0bd949
+
+	measure 'Returned Orders' = CALCULATE ( [Orders], fact_orders[is_returned] = TRUE () )
+		formatString: #,0
+		displayFolder: Orders
+		lineageTag: 750e21ee-5ba9-5830-aad6-250ef47ea019
+
+	measure 'Cancellation Rate' = DIVIDE ( [Cancelled Orders], [Orders] )
+		formatString: 0.0%
+		displayFolder: Orders
+		lineageTag: 6298657f-c0ba-5c12-a9e8-5a769cbf2d10
+
+	measure 'Order Return Rate' = DIVIDE ( [Returned Orders], [Orders] )
+		formatString: 0.0%
+		displayFolder: Orders
+		lineageTag: 88b78896-78e2-5c6e-af4f-70d39482916f
+
+	measure 'Net Revenue' = CALCULATE ( SUM ( fact_orders[total_amount] ), fact_orders[is_completed_sale] = TRUE () )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Revenue
+		lineageTag: e12bdbd6-e7da-5cc3-ae44-139dcbf8159e
+
+	measure 'Gross Order Value' = SUM ( fact_orders[total_amount] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Revenue
+		lineageTag: ef101e59-cc98-5fdd-a37a-13b22a39628c
+
+	measure 'Average Order Value' = DIVIDE ( [Net Revenue], [Completed Orders] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Revenue
+		lineageTag: 6f9f82aa-45c7-55be-981d-0cbbb751405e
+
+	measure 'Discount Rate' = DIVIDE ( SUM ( fact_orders[discount_amount] ), SUM ( fact_orders[subtotal] ) )
+		formatString: 0.0%
+		displayFolder: Revenue
+		lineageTag: 48dd357d-f699-5659-94b4-9a81726d62b3
+
+	measure 'Net Revenue PY' = CALCULATE ( [Net Revenue], SAMEPERIODLASTYEAR ( dim_date[date] ) )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Time Intelligence
+		lineageTag: a3a75dd7-027d-5468-9533-24be7c884aa9
+
+	measure 'Net Revenue YoY %' = DIVIDE ( [Net Revenue] - [Net Revenue PY], [Net Revenue PY] )
+		formatString: 0.0%
+		displayFolder: Time Intelligence
+		lineageTag: 4b2f9bfd-1253-502d-af86-ac397eced9dd
+
+	measure 'Net Revenue YTD' = TOTALYTD ( [Net Revenue], dim_date[date] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Time Intelligence
+		lineageTag: 9925a7a9-4e6d-56d1-b763-a34a2a0d5980
+
+	measure 'Active Customers' = CALCULATE ( DISTINCTCOUNT ( fact_orders[customer_id] ), fact_orders[is_completed_sale] = TRUE () )
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 0805be37-de13-5fed-814c-4209b1eb5fe0
+
+	measure 'Revenue per Customer' = DIVIDE ( [Net Revenue], [Active Customers] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Customers
+		lineageTag: 563b415d-8b66-55a7-b31b-21bfa30a9d02
+
+	measure 'New Customers' =
+			VAR _start = MIN ( dim_date[date] )
+			VAR _end = MAX ( dim_date[date] )
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( dim_customer ),
+			        dim_customer[first_order_date] >= _start,
+			        dim_customer[first_order_date] <= _end
+			    )
+		formatString: #,0
+		displayFolder: Customers
+		lineageTag: 6d40adef-c786-54ed-902c-0dafaa255379
+
+	measure 'Avg Days to Deliver' = AVERAGE ( fact_orders[days_to_deliver] )
+		formatString: 0.0
+		displayFolder: Logistics
+		lineageTag: 39fecc50-0d1b-5d3f-96c8-b6c147863dd2
+
+	measure 'Avg Days in Transit' = AVERAGE ( fact_orders[days_in_transit] )
+		formatString: 0.0
+		displayFolder: Logistics
+		lineageTag: 02f5c063-c66c-59b6-ad7d-7676da80c14c
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: e2687f6c-52bb-5a4c-a14e-d0b239664d0f
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: b4348a43-5161-58e6-82b8-24ac6a89e290
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isHidden
+		lineageTag: 8bf2feab-c79d-5e29-ad24-e422c159b383
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_ts
+		dataType: dateTime
+		formatString: yyyy-mm-dd hh:nn:ss
+		lineageTag: 7d71fe86-e44c-5157-a70f-a23a63612c3d
+		summarizeBy: none
+		sourceColumn: order_ts
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: bf4da763-d828-5c5c-96c0-fb803d72579c
+		summarizeBy: none
+		sourceColumn: order_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: c0bd500b-8191-58c2-9ce1-fbe026608c74
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: 4d3d6d1b-f787-5266-95ca-cff2c210334d
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column subtotal
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: f39b25f4-4d76-5cae-b981-90899f8bd25c
+		summarizeBy: sum
+		sourceColumn: subtotal
+
+		annotation SummarizationSetBy = Automatic
+
+	column discount_amount
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 6cb22c6a-bbca-582e-874a-6f227af533c2
+		summarizeBy: sum
+		sourceColumn: discount_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_fee
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: de70a268-d464-504f-bf7f-e7bf478599e9
+		summarizeBy: sum
+		sourceColumn: shipping_fee
+
+		annotation SummarizationSetBy = Automatic
+
+	column tax_amount
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: d6631693-a6be-56eb-9af6-83bdf8f63339
+		summarizeBy: sum
+		sourceColumn: tax_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_amount
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 0f7ece88-8903-5470-ad62-83ad4a2e9ecf
+		summarizeBy: sum
+		sourceColumn: total_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_merchandise
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 8290c79d-8512-57ea-8d94-3600d79a5835
+		summarizeBy: sum
+		sourceColumn: net_merchandise
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_cancelled
+		dataType: boolean
+		lineageTag: 3040dec7-a0bd-50d0-9b6f-0256e8e6749f
+		summarizeBy: none
+		sourceColumn: is_cancelled
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_returned
+		dataType: boolean
+		lineageTag: 5c332657-a018-5308-86aa-76dac3402806
+		summarizeBy: none
+		sourceColumn: is_returned
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_completed_sale
+		dataType: boolean
+		lineageTag: 1dfc53bf-4303-5c86-84e1-96c6fc1293dd
+		summarizeBy: none
+		sourceColumn: is_completed_sale
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_discount
+		dataType: boolean
+		lineageTag: e289df79-6195-5fab-92f6-6d0428a2ad35
+		summarizeBy: none
+		sourceColumn: has_discount
+
+		annotation SummarizationSetBy = Automatic
+
+	column line_count
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6ec5ec54-645e-53f2-ad85-7f2885f49b1d
+		summarizeBy: sum
+		sourceColumn: line_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column units
+		dataType: int64
+		formatString: #,0
+		lineageTag: 3edc6dee-7316-530c-8126-93dd8a1eb7f9
+		summarizeBy: sum
+		sourceColumn: units
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_method
+		dataType: string
+		lineageTag: abaf8006-11d8-5d94-adb8-db81dc01e7d8
+		summarizeBy: none
+		sourceColumn: payment_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_status
+		dataType: string
+		lineageTag: 221d4e21-cab6-5e61-b7c6-5aa83de9b4f5
+		summarizeBy: none
+		sourceColumn: payment_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column carrier
+		dataType: string
+		lineageTag: 1a544830-7c4f-5e9a-a289-7299d1dd4279
+		summarizeBy: none
+		sourceColumn: carrier
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipped_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 04b5396a-669a-5bab-b3e4-8b9cf60f5b8d
+		summarizeBy: none
+		sourceColumn: shipped_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column delivered_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2a2613ff-6f9a-5936-8950-e45fba621d12
+		summarizeBy: none
+		sourceColumn: delivered_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_to_ship
+		dataType: int64
+		formatString: #,0
+		lineageTag: ac395932-9b82-5d0f-914e-ec4bf9dd2f46
+		summarizeBy: none
+		sourceColumn: days_to_ship
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_in_transit
+		dataType: int64
+		formatString: #,0
+		lineageTag: dc173c5f-adfc-59a5-bce7-8bc626a2a667
+		summarizeBy: none
+		sourceColumn: days_in_transit
+
+		annotation SummarizationSetBy = Automatic
+
+	column days_to_deliver
+		dataType: int64
+		formatString: #,0
+		lineageTag: 464d6ec4-00a7-5519-a2ba-a01b0f9b59b9
+		summarizeBy: none
+		sourceColumn: days_to_deliver
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_orders = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(PgServer, PgDatabase),
+				    Data = Source{[Schema="analytics", Item="fact_orders"]}[Data]
+				in
+				    Data
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation

@@ -1,0 +1,190 @@
+table fact_order_items
+	lineageTag: 1e02c223-1a01-5973-9139-7701032dfeba
+
+	measure 'Net Sales' = CALCULATE ( SUM ( fact_order_items[net_sales] ), fact_order_items[is_completed_sale] = TRUE () )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability
+		lineageTag: f6d62e6b-7840-5677-ac2d-47d55a757252
+
+	measure 'Total COGS' = CALCULATE ( SUM ( fact_order_items[cogs] ), fact_order_items[is_completed_sale] = TRUE () )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability
+		lineageTag: 2e586117-5743-59ac-9fc2-0275f317ccc9
+
+	measure 'Gross Profit' = [Net Sales] - [Total COGS]
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Profitability
+		lineageTag: c0f5418f-0617-5f9c-a508-f6c75b003d73
+
+	measure 'Gross Margin %' = DIVIDE ( [Gross Profit], [Net Sales] )
+		formatString: 0.0%
+		displayFolder: Profitability
+		lineageTag: eb772507-38aa-52e5-91a6-6063a450ceaa
+
+	measure 'Units Sold' = CALCULATE ( SUM ( fact_order_items[quantity] ), fact_order_items[is_completed_sale] = TRUE () )
+		formatString: #,0
+		displayFolder: Profitability
+		lineageTag: 7e01d17b-11b2-50c5-9a21-303b82fd8bfc
+
+	measure 'Order Lines' = COUNTROWS ( fact_order_items )
+		formatString: #,0
+		displayFolder: Profitability
+		lineageTag: e5b55bc8-9242-5ddb-b92c-9bee34d82684
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: bb51fce3-ed39-5c41-95b3-f2efe5bb4bc1
+		summarizeBy: none
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 3086d248-3982-571a-995c-6cb31add7ac1
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: d69c9116-4570-5fdb-8bd0-c6b69e7a29b8
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 1a213441-7565-5b4f-9bd7-08d0268fcfc6
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isHidden
+		lineageTag: 606fd7bd-cf8d-5cdf-be27-c5be44c1664e
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_status
+		dataType: string
+		lineageTag: fad3a6e4-ef56-55c8-8dae-9ea263d26785
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column channel
+		dataType: string
+		lineageTag: 8a109cc0-41da-5b17-bd9d-5b49e2a82b31
+		summarizeBy: none
+		sourceColumn: channel
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 0380f421-8d61-5acd-b328-09f36b73ae9d
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_price
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: d7cf0a7c-dd85-50b2-9310-21aa2f153a8e
+		summarizeBy: sum
+		sourceColumn: unit_price
+
+		annotation SummarizationSetBy = Automatic
+
+	column gross_sales
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: a6abd00a-9598-55aa-9257-4558ff5d6104
+		summarizeBy: sum
+		sourceColumn: gross_sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column discount_allocated
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 620f38a0-56c5-5889-8fc9-5f816b530cda
+		summarizeBy: sum
+		sourceColumn: discount_allocated
+
+		annotation SummarizationSetBy = Automatic
+
+	column net_sales
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: d80ad539-fdc9-541a-b8cb-6f16dba74b93
+		summarizeBy: sum
+		sourceColumn: net_sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column cogs
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 289aa20e-3f9c-5c64-ab41-bcd51a705749
+		summarizeBy: sum
+		sourceColumn: cogs
+
+		annotation SummarizationSetBy = Automatic
+
+	column gross_profit
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 8cbdbdf3-67c2-57c3-bfcb-8bd94d2645df
+		summarizeBy: sum
+		sourceColumn: gross_profit
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_completed_sale
+		dataType: boolean
+		lineageTag: 09d49bb3-69b4-5db4-935a-2c7279606ec0
+		summarizeBy: none
+		sourceColumn: is_completed_sale
+
+		annotation SummarizationSetBy = Automatic
+
+	column has_return_request
+		dataType: boolean
+		lineageTag: 8d6f4b40-f3d9-5fb3-a9b0-ec6ab7266ebf
+		summarizeBy: none
+		sourceColumn: has_return_request
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_order_items = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(PgServer, PgDatabase),
+				    Data = Source{[Schema="analytics", Item="fact_order_items"]}[Data]
+				in
+				    Data
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation

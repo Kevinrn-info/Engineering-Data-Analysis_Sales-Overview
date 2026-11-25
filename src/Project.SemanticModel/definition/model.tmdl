@@ -6,29 +6,19 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["customers","order_items","orders","payments","products","returns","shipments"]
+annotation PBI_QueryOrder = ["PgServer","PgDatabase","dim_date","dim_customer","dim_product","fact_orders","fact_order_items","fact_returns"]
 
-annotation __PBI_TimeIntelligenceEnabled = 1
+annotation __PBI_TimeIntelligenceEnabled = 0
 
 annotation PBIDesktopVersion = 2.146.705.0 (25.08)+b71502aff0a01340c88f384884ef42771068f115
 
 annotation PBI_ProTooling = ["DevMode"]
 
-ref table customers
-ref table DateTableTemplate_5a0c61e9-0c6b-4570-b774-9cec2dcda5f0
-ref table LocalDateTable_61941a99-b163-4b74-840b-58793d085a99
-ref table order_items
-ref table orders
-ref table payments
-ref table LocalDateTable_5685b821-be53-45ea-b778-4e134f31cec8
-ref table LocalDateTable_7934eb69-36a6-4847-b65b-a793572d0246
-ref table products
-ref table LocalDateTable_bfe8ecdd-3678-43c9-92a2-33f4305461de
-ref table returns
-ref table LocalDateTable_0d8ac162-ccee-4e8c-a1f7-4cbea3a9ef37
-ref table shipments
-ref table LocalDateTable_c8a1e089-754b-4208-855c-0c367cb7fcd2
-ref table LocalDateTable_4ec64be0-5d5b-428a-bc21-b892142d4b91
+ref table dim_date
+ref table dim_customer
+ref table dim_product
+ref table fact_orders
+ref table fact_order_items
+ref table fact_returns
 
 ref cultureInfo en-US
-

@@ -1,0 +1,165 @@
+table fact_returns
+	lineageTag: 78f0ef40-2f2c-5278-bdb0-91c80aa916f8
+
+	measure 'Returned Lines' = COUNTROWS ( fact_returns )
+		formatString: #,0
+		displayFolder: Returns
+		lineageTag: 73e4a365-3cc6-54c4-bcf2-e4ca9dd35f90
+
+	measure 'Refund Amount' = SUM ( fact_returns[refund_amount] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: Returns
+		lineageTag: 8c9bc394-f423-53b8-a840-3ba7d4019c4a
+
+	measure 'Avg Days to Return' = AVERAGE ( fact_returns[days_to_return] )
+		formatString: 0.0
+		displayFolder: Returns
+		lineageTag: af89d2a6-aba7-5254-8edc-abb0a2baef4c
+
+	measure 'Item Return Rate' =
+			VAR _returned =
+			    CALCULATE (
+			        COUNTROWS ( fact_returns ),
+			        USERELATIONSHIP ( fact_returns[order_date], dim_date[date] )
+			    )
+			RETURN
+			    DIVIDE ( _returned, [Order Lines] )
+		formatString: 0.0%
+		displayFolder: Returns
+		lineageTag: fbd9804d-ddca-5d3a-98ca-83f7feccf1c2
+
+	column return_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cf7023d4-f7d0-57bd-98b8-6ef80cbf9b43
+		summarizeBy: none
+		sourceColumn: return_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1753b2eb-8817-56c7-a032-0ff4b2346a29
+		summarizeBy: none
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 83cca36d-7dc2-57a4-808c-670420484516
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: 4d50b810-7c05-528b-9e4d-eba16859666c
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		isHidden
+		lineageTag: b48fa17e-3a0b-5a5f-9f32-7613b55aaa87
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column requested_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isHidden
+		lineageTag: 38638e14-345d-5d4d-acc4-9da4de67d184
+		summarizeBy: none
+		sourceColumn: requested_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column order_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		isHidden
+		lineageTag: 00cd4324-5130-53bd-9ea1-f4a10736d503
+		summarizeBy: none
+		sourceColumn: order_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column days_to_return
+		dataType: int64
+		formatString: #,0
+		lineageTag: ee97e2ff-251c-58a9-9cb2-f7c7289dcb1e
+		summarizeBy: none
+		sourceColumn: days_to_return
+
+		annotation SummarizationSetBy = Automatic
+
+	column return_reason
+		dataType: string
+		lineageTag: ac54bbd8-90ce-5317-97ca-eaa3a251d4a1
+		summarizeBy: none
+		sourceColumn: return_reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column return_status
+		dataType: string
+		lineageTag: 11bbcc16-1f4f-594d-a526-8d3e0aa1212b
+		summarizeBy: none
+		sourceColumn: return_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 899d3b2c-f3a2-5f0e-af65-1295f4c30892
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column returned_sales
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 18e95655-beba-5f89-add3-e8ba2cd08b6b
+		summarizeBy: sum
+		sourceColumn: returned_sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column refund_amount
+		dataType: decimal
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: a6f4eea4-d937-5dff-84d0-f38495eb6d93
+		summarizeBy: sum
+		sourceColumn: refund_amount
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_returns = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database(PgServer, PgDatabase),
+				    Data = Source{[Schema="analytics", Item="fact_returns"]}[Data]
+				in
+				    Data
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation

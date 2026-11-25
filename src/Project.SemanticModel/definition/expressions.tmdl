@@ -1,0 +1,9 @@
+expression PgServer = "localhost:5432" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 3af8b0ce-9d51-530e-b6cc-0930f50aee45
+
+	annotation PBI_ResultType = Text
+
+expression PgDatabase = "summitbase" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: a8ad18e3-53e8-5c78-bb37-258a283fe8bc
+
+	annotation PBI_ResultType = Text
