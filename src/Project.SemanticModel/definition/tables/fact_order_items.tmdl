@@ -6,12 +6,12 @@ table fact_order_items
 		displayFolder: Profitability
 		lineageTag: f6d62e6b-7840-5677-ac2d-47d55a757252
 
-	measure COGS = CALCULATE ( SUM ( fact_order_items[cogs] ), fact_order_items[is_completed_sale] = TRUE () )
+	measure 'Total COGS' = CALCULATE ( SUM ( fact_order_items[cogs] ), fact_order_items[is_completed_sale] = TRUE () )
 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
 		displayFolder: Profitability
 		lineageTag: 2e586117-5743-59ac-9fc2-0275f317ccc9
 
-	measure 'Gross Profit' = [Net Sales] - [COGS]
+	measure 'Gross Profit' = [Net Sales] - [Total COGS]
 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
 		displayFolder: Profitability
 		lineageTag: c0f5418f-0617-5f9c-a508-f6c75b003d73
